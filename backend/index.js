@@ -88,3 +88,5 @@ app.get("/booklist",function(req,res){
 app.listen(5000,function(){
     console.log("Server Started")
 })
+
+module.exports=app
