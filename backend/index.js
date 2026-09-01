@@ -11,13 +11,26 @@ app.use(cors())
 app.use(express.json())
 
 // const book=[{title:"CSS",author:"Smith",price:200,category:"Programming",available:"Yes"},{title:"JS",author:"Sruthi",price:600,category:"Other",available:"No"}]
+let isConnected = false;
 
-mongoose.connect(process.env.MONGO_URL)
-.then(function(){
-    console.log("DB Connected")
-}) .catch(function(err){
-    console.log("Failed to connect",err.message)
-})
+async function connectDB() {
+    if (isConnected) return;
+    try {
+        await mongoose.connect(process.env.MONGO_URL);
+        isConnected = true;
+        console.log("DB Connected");
+    } catch (err) {
+        console.log("Failed to connect", err.message);
+    }
+}
+
+connectDB();
+// mongoose.connect(process.env.MONGO_URL)
+// .then(function(){
+//     console.log("DB Connected")
+// }) .catch(function(err){
+//     console.log("Failed to connect",err.message)
+// })
 
 const Books=mongoose.model("Books",
     {title:String,author:String,category:String,price:Number,
