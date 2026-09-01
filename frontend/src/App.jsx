@@ -1,6 +1,5 @@
 import './index.css'
-import AddBooks from './Components/AddBooks'
-import BookList from './Components/BookList'
+import AddBooks from './Components/AddBooks' 
 
 function App() {
   return (
