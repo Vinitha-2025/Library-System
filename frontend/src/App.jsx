@@ -6,7 +6,6 @@ function App() {
   return (
     <div className="min-h-screen bg-transparent">
       <AddBooks />
-      <BookList />
     </div>
   )
 }

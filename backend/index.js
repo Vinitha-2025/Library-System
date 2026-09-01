@@ -1,6 +1,10 @@
+const dns = require("dns")
+dns.setServers(["8.8.8.8", "8.8.4.4"])
+
 const express=require("express")
 const cors=require("cors")
 const mongoose=require("mongoose")
+require("dotenv").config()
 
 const app=express()
 app.use(cors())
@@ -8,11 +12,11 @@ app.use(express.json())
 
 // const book=[{title:"CSS",author:"Smith",price:200,category:"Programming",available:"Yes"},{title:"JS",author:"Sruthi",price:600,category:"Other",available:"No"}]
 
-mongoose.connect("mongodb://127.0.0.1:27017/library")
+mongoose.connect(process.env.MONGO_URL)
 .then(function(){
     console.log("DB Connected")
-}) .catch(function(){
-    console.log("Failed to connect")
+}) .catch(function(err){
+    console.log("Failed to connect",err.message)
 })
 
 const Books=mongoose.model("Books",
@@ -80,6 +84,7 @@ app.delete("/deletelist/:id",function(req,res){
 app.get("/booklist",function(req,res){
     Books.find().then(function(retdata){
         res.send(retdata)
+        console.log(retdata)
     })
 })
 

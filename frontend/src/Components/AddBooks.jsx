@@ -49,24 +49,50 @@ function AddBooks() {
     }
 
     function addList(){
+        // Validate form
+        if(!title || !author || !price || !category || !available){
+            alert("Please fill all fields")
+            return
+        }
+        
         if(editId){
             axios.put(`http://localhost:5000/updatelist/${editId}`,{newbook:{title,author,price,category,available}})
             .then(function(response){
+                console.log("Update response:", response.data)
                 if(response.data.status==="success"){
-                    setBook(book.map(item => item._id === editId ? {_id:editId,title,author,price,category,available} : item))
-                    clearForm()
+                    // Refresh entire list from backend
+                    axios.get("http://localhost:5000/booklist")
+                    .then(function(data){
+                        setBook(data.data)
+                        clearForm()
+                        alert("Book updated successfully!")
+                    })
                 }
+            })
+            .catch(function(error){
+                console.log("Update error:", error.message)
+                alert("Failed to update book: " + error.message)
             })
         } else {
             axios.post("http://localhost:5000/addlist", {
-    newbook:{title,author,price,category,available}
-})
-.then(function(response){
-    if(response.data.status==="success"){
-        setBook([...book,response.data.book])
-        clearForm()
-    }
-})
+                newbook:{title,author,price,category,available}
+            })
+            .then(function(response){
+                console.log("Add response:", response.data)
+                if(response.data.status==="success"){
+                    // Refresh entire list from backend to get latest data
+                    axios.get("http://localhost:5000/booklist")
+                    .then(function(data){
+                        setBook(data.data)
+                        clearForm()
+                        alert("Book added successfully!")
+                    })
+                }
+            })
+            .catch(function(error){
+                console.log("Add error:", error.message)
+                alert("Failed to add book: " + error.message)
+            })
         }
     }
 
@@ -90,9 +116,12 @@ function AddBooks() {
             .then(function(response){
                 console.log("Delete response:", response.data)
                 if(response.data && response.data.status==="success"){
-                    // Remove from local state
-                    setBook(book.filter(item => item._id !== id))
-                    alert("Book deleted successfully!")
+                    // Refresh entire list from backend
+                    axios.get("http://localhost:5000/booklist")
+                    .then(function(data){
+                        setBook(data.data)
+                        alert("Book deleted successfully!")
+                    })
                 } else {
                     alert("Failed to delete book. Please try again.")
                 }
@@ -100,11 +129,6 @@ function AddBooks() {
             .catch(function(error){
                 console.log("Delete error:", error.message)
                 alert("Error: " + (error.response?.data?.message || error.message || "Failed to delete book"))
-                // Refresh the list to ensure it's in sync with the server
-                axios.get("http://localhost:5000/booklist")
-                .then(function(data){
-                    setBook(data.data)
-                })
             })
         }
     }
