@@ -12,7 +12,7 @@ function AddBooks() {
     const[editId,setEditId]=useState(null)
 
     useEffect(function(){
-        axios.get("http://localhost:5000/booklist")
+        axios.get("https://library-system-fswd.vercel.app/booklist")
         .then(function(data){
           console.log(data.data)
           setBook(data.data)
@@ -56,12 +56,12 @@ function AddBooks() {
         }
         
         if(editId){
-            axios.put(`http://localhost:5000/updatelist/${editId}`,{newbook:{title,author,price,category,available}})
+            axios.put(`https://library-system-fswd.vercel.app/updatelist/${editId}`,{newbook:{title,author,price,category,available}})
             .then(function(response){
                 console.log("Update response:", response.data)
                 if(response.data.status==="success"){
                     // Refresh entire list from backend
-                    axios.get("http://localhost:5000/booklist")
+                    axios.get("https://library-system-fswd.vercel.app/booklist")
                     .then(function(data){
                         setBook(data.data)
                         clearForm()
@@ -74,14 +74,14 @@ function AddBooks() {
                 alert("Failed to update book: " + error.message)
             })
         } else {
-            axios.post("http://localhost:5000/addlist", {
+            axios.post("https://library-system-fswd.vercel.app/addlist", {
                 newbook:{title,author,price,category,available}
             })
             .then(function(response){
                 console.log("Add response:", response.data)
                 if(response.data.status==="success"){
                     // Refresh entire list from backend to get latest data
-                    axios.get("http://localhost:5000/booklist")
+                    axios.get("https://library-system-fswd.vercel.app/booklist")
                     .then(function(data){
                         setBook(data.data)
                         clearForm()
@@ -112,12 +112,12 @@ function AddBooks() {
         }
         
         if(window.confirm("Are you sure you want to delete this book?")){
-            axios.delete(`http://localhost:5000/deletelist/${id}`)
+            axios.delete(`https://library-system-fswd.vercel.app/deletelist/${id}`)
             .then(function(response){
                 console.log("Delete response:", response.data)
                 if(response.data && response.data.status==="success"){
                     // Refresh entire list from backend
-                    axios.get("http://localhost:5000/booklist")
+                    axios.get("https://library-system-fswd.vercel.app/booklist")
                     .then(function(data){
                         setBook(data.data)
                         alert("Book deleted successfully!")
